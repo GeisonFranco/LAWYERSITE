@@ -1,0 +1,991 @@
+/* =====================================================================
+   styles.css - página principal (index.html)
+   Mobile-first no que importa: tudo usa clamp()/vw/auto-fit e só há
+   2 pontos de quebra no final do arquivo (800px e 560px).
+   ===================================================================== */
+
+/* ---------- Base ---------- */
+:root {
+  --bg: #0b0b0b;
+  --fg: #fff;
+  --muted: #bdbdbd;
+  --accent: #d7ff3a;
+  --h: "Oswald", "Arial Narrow", Impact, sans-serif;
+  --b: "Inter", Arial, sans-serif;
+  --pad: 4vw; /* margem lateral única de todas as seções */
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.6 var(--b);
+  overflow-x: hidden; /* garante que nada cause rolagem horizontal no celular */
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--h);
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.05;
+}
+section {
+  padding: 10vh var(--pad);
+}
+
+/* ---------- Cabeçalho (fixo; some ao descer e volta ao subir - ver scrypt.js) ---------- */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px var(--pad);
+  transition:
+    transform 0.4s,
+    background 0.3s;
+  animation: fade-down 0.9s ease backwards; /* entrada ao carregar a página */
+}
+header.hide {
+  transform: translateY(-110%);
+}
+header.solid {
+  background: rgba(11, 11, 11, 0.85);
+  backdrop-filter: blur(10px);
+  padding-block: 16px;
+}
+.logo {
+  font-family: var(--h);
+  font-size: clamp(
+    18px,
+    5vw,
+    28px
+  ); /* encolhe no celular para caber ao lado do botão */
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+nav {
+  display: flex;
+  gap: clamp(12px, 3vw, 32px);
+  align-items: center;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+nav a:hover {
+  color: var(--accent);
+}
+nav .container-social {
+  margin: 0;
+}
+.btn {
+  display: inline-block;
+  border: 2px solid var(--fg);
+  padding: 12px 24px;
+  font-family: var(--h);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+.btn:hover {
+  background: var(--fg);
+  color: #000;
+}
+
+/* ---------- Barra de progresso de rolagem (topo da tela) ---------- */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  z-index: 50;
+}
+/* Navegadores novos animam só com CSS; nos demais o scrypt.js assume */
+@supports (animation-timeline: scroll()) {
+  .bar {
+    animation: grow linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes grow {
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+/* ---------- Hero (vídeo de fundo + título) ---------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh; /* "svh" = altura real no celular, sem a barra do navegador */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 var(--pad) 8vh;
+}
+.hero video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* o vídeo preenche qualquer tamanho de tela, sem distorcer */
+}
+/* Degradê escuro por cima do vídeo para o texto ficar legível */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.15) 60%
+  );
+}
+.hero > div {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  will-change:
+    transform, opacity; /* o scrypt.js move/esmaece este bloco ao rolar */
+}
+.hero h1 {
+  font-size: clamp(48px, 11vw, 170px);
+  margin-bottom: 24px;
+  animation: fade-up 1s 0.2s ease backwards;
+}
+.hero h2 {
+  font-size: clamp(16px, 2vw, 28px);
+  font-weight: 500;
+  max-width: 720px;
+  letter-spacing: 0.03em;
+  animation: fade-up 1s 0.5s ease backwards;
+}
+
+/* ---------- Texto de introdução ---------- */
+.intro {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--muted);
+  font-size: clamp(20px, 2.2vw, 18px);
+}
+
+/* ---------- Letreiro (texto vazado que anda com a rolagem) ---------- */
+.mq {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 3vh 0;
+  border-block: 1px solid #2a2a2a;
+}
+.mq span {
+  display: inline-block;
+  font-family: var(--h);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: clamp(40px, 13vw, 150px);
+  line-height: 1;
+  will-change: transform;
+  -webkit-text-stroke: 2px #c5c4c4; /* contorno */
+  color: transparent; /* miolo vazado */
+  padding-left: var(--pad);
+}
+.mq span b {
+  color: #000;
+  -webkit-text-stroke: 0;
+}
+
+/* ---------- Fotos com parallax ---------- */
+/* Cada foto fica numa "moldura" (overflow hidden) e a imagem é 30% mais alta
+   que ela: o scrypt.js desliza a imagem dentro da moldura = efeito parallax. */
+.ph,
+.quote,
+.grid div {
+  position: relative;
+  overflow: hidden;
+}
+.ph > img,
+.quote > img,
+.grid div > img {
+  position: absolute;
+  left: 0;
+  top: -15%;
+  width: 100%;
+  height: 130%;
+  will-change: transform;
+}
+.ph {
+  border-radius: 5px 5px 5px 5px;
+}
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 10vh var(--pad) 0;
+}
+.two .ph {
+  aspect-ratio: 4/5;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 0 var(--pad);
+}
+.grid div {
+  aspect-ratio: 1;
+}
+/* As molduras "abrem" (recorte -> tela cheia) enquanto entram na tela */
+@supports (animation-timeline: view()) {
+  .two .ph,
+  .grid div {
+    animation: clipin linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
+  }
+  @keyframes clipin {
+    from {
+      clip-path: inset(18% 12% 18% 12%);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+}
+
+/* ---------- Especialidades (cards) ---------- */
+.cols {
+  padding-top: 0%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6vw;
+  align-items: center;
+}
+.cols h3 {
+  font-size: clamp(32px, 4vw, 56px);
+  margin-bottom: 20px;
+}
+.cols p {
+  color: var(--muted);
+}
+.list {
+  font-family: var(--h);
+  text-transform: uppercase;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.card {
+  min-height: 100px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba(78, 76, 76, 0.58);
+  border: 1px solid #fff;
+  border-radius: 17px;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px);
+  color: #000;
+  font-weight: bolder;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.5s;
+}
+.card:hover {
+  border-color: #000;
+  transform: scale(1.05);
+}
+.card:active {
+  transform: scale(0.95) rotate(1.7deg);
+}
+
+/* ---------- Sobre nós + redes sociais ---------- */
+.icons-schedule {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4vw 6vw;
+  align-items: center;
+}
+/* Ícones sempre brancos (o filtro transforma qualquer cor em branco) */
+.container-social {
+  display: grid;
+  justify-items: center;
+  margin: 1rem auto;
+  text-align: center;
+  filter: brightness(0) invert(1);
+}
+.icons {
+  display: flex;
+  flex-wrap: wrap; /* quebra de linha em telas estreitas */
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem 0;
+}
+.social-icon {
+  width: 3rem;
+  height: 3rem;
+}
+.social-icon:hover {
+  animation: wobble 0.5s 1 linear;
+}
+@keyframes wobble {
+  0%,
+  50% {
+    transform: scale(0.7, 1.3);
+  }
+  25%,
+  75% {
+    transform: scale(1.3, 0.7);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+/* ---------- Citação (foto de fundo com parallax) ---------- */
+.quote {
+  padding: 14vh var(--pad);
+}
+.quote > div {
+  position: relative;
+  z-index: 2;
+  max-width: 1000px;
+}
+.quote h2 {
+  font-size: clamp(26px, 4.5vw, 64px);
+  margin: 12px 0 20px;
+}
+.text-black {
+  color: #fafafa;
+}
+
+/* ---------- Endereços + mapa ---------- */
+.loc {
+  display: flex;
+  flex-wrap: wrap; /* no celular os blocos empilham sozinhos, centralizados */
+  align-items: center;
+  justify-content: center;
+  gap: 32px 6vw;
+  text-align: center;
+}
+
+.loc h3 {
+  font-size: clamp(28px, 3vw, 36px);
+  margin-bottom: 10px;
+}
+.loc p {
+  color: var(--muted);
+}
+@media (max-width: 800px) {
+  .loc {
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+}
+.mapa-container {
+  flex: 1 1 320px;
+  max-width: 560px;
+}
+.mapa-container iframe {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 30vh, 320px);
+  border: 0;
+  border-radius: 2rem;
+  filter: grayscale(100%) contrast(100%); /* mapa em tons escuros */
+}
+
+/* ---------- Contato ---------- */
+.news {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+.news h3 {
+  font-size: clamp(32px, 5vw, 44px);
+  margin-bottom: 16px;
+}
+.news p {
+  color: var(--muted);
+}
+
+/* ---------- Rodapé ---------- */
+footer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  align-items: center;
+  text-align: center;
+  border-top: 1px solid #333;
+  padding: 8vh var(--pad);
+  color: var(--muted);
+  font-size: 15px;
+}
+footer h3 {
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+footer a {
+  display: block;
+}
+footer a:hover {
+  color: var(--accent);
+}
+footer .icons {
+  padding: 0;
+}
+
+/* ---------- Fades ---------- */
+/* .rv = "reveal": começa invisível/deslocado e ganha a classe .in quando
+   entra na tela (IntersectionObserver no scrypt.js). .d1/.d2 = atrasos. */
+.rv {
+  opacity: 0;
+  transform: translateY(60px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.rv.in {
+  text-align: center;
+  opacity: 1;
+  transform: none;
+}
+.rv.d1 {
+  transition-delay: 0.12s;
+}
+.rv.d2 {
+  transition-delay: 0.24s;
+}
+/* Animações de entrada (só "from": o destino é o estilo normal do elemento) */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+/* ---------- Tablets e celulares ---------- */
+@media (max-width: 800px) {
+  header {
+    padding-block: 18px;
+  }
+  .btn {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  .social-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .two,
+  .cols,
+  .icons-schedule,
+  footer {
+    grid-template-columns: 1fr;
+  }
+  .two .ph {
+    width: 100%;
+    max-width: 520px;
+    margin-inline: auto; /* fotos centralizadas quando empilham */
+  }
+  .icons-schedule {
+    text-align: center;
+    justify-content: center;
+  }
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid div:last-child {
+    grid-column: 1 / -1; /* a 3ª foto ocupa a linha toda (sem sobrar vazio) */
+    aspect-ratio: 2/1;
+  }
+}
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .grid div:last-child {
+    aspect-ratio: 1;
+  }
+  /* Títulos centralizados no celular */
+  .hero > div,
+  .quote > div {
+    margin-inline: auto;
+    text-align: center;
+  }
+  .hero h2 {
+    margin-inline: auto;
+  }
+}
+
+/* ---------- Acessibilidade: sem movimento para quem desativou animações ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation: none !important;
+  }
+  .rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.copy {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  text-align: center;
+  padding: 20px 10px;
+  background-color: no;
+  border-top: 1px solid #1b1b1b;
+  letter-spacing: 0.5px;
+}
+.heart {
+  color: #ff4d4d;
+  margin: 0 8px;
+  font-size: 14px;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+/* ---------- card social visit ---------- */
+.card-social-visit {
+  background-color: #191919;
+  border-radius: 2rem;
+  padding: 3rem;
+  width: 60%;
+  margin-left: 5rem;
+  margin-top: 0;
+}
+.section-about {
+  text-align: center;
+  justify-content: center;
+}
+.cols-shedule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Button Container with Metallic Gradient and Depth */
+.card-container {
+  position: relative;
+  background: linear-gradient(135deg, hsla(0, 4%, 89%, 0), #13131300);
+  border-radius: 20px;
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.3),
+    -6px -6px 12px rgba(44, 44, 44, 0.3),
+    inset 2px 2px 4px rgba(90, 89, 89, 0.4),
+    inset -2px -2px 4px rgba(116, 115, 115, 0.5);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Shining Effect Overlay */
+.card-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vh;
+  height: 100vh;
+  background: linear-gradient(45deg, #676767, #343131b3, #070707);
+  background-size: 200% 200%;
+  animation: shine 2s infinite ease-in-out;
+  border-radius: 20px;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center; /* centraliza o texto na vertical */
+  justify-content: center; /* e na horizontal */
+  min-height: 150px;
+  min-width: 0; /* antes: 280px, estourava a coluna em telas menores */
+  max-width: 100%;
+  padding: clamp(1rem, 4vw, 2rem);
+  margin: clamp(0.25rem, 2vw, 2rem);
+  position: relative;
+  overflow: hidden;
+}
+.card-container > h2 {
+  position: relative; /* fica acima do brilho (::before) e centralizado pelo flex do card */
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(
+    1.4rem,
+    5vw,
+    2.5rem
+  ); /* encolhe no celular, 2.5rem no desktop */
+  white-space: normal; /* o texto quebra de linha dentro do card */
+  overflow-wrap: anywhere;
+  font-family:
+    "Montserrat",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+/* =====================================================================
+   RESPONSIVIDADE: card "Schedule a visit" (.card-social-visit)
+   O card é um "container": o título e os ícones se dimensionam pela
+   largura do próprio card (unidade cqw), então nunca vazam para fora.
+   ===================================================================== */
+.card-social-visit {
+  container-type: inline-size;
+  min-width: 0;
+  max-width: 100%;
+  padding: clamp(1.25rem, 5vw, 3rem); /* antes: 3rem fixo */
+  overflow-wrap: anywhere;
+}
+.card-social-visit h3 {
+  font-size: clamp(22px, 5vw, 40px); /* reserva p/ navegadores sem cqw */
+  font-size: min(clamp(32px, 4vw, 56px), 13cqw);
+  margin-bottom: 0;
+}
+/* Ícones SEMPRE em uma única fila, centralizados; encolhem junto com o card */
+.card-social-visit .icons {
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0.4rem, 2vw, 1rem); /* reserva */
+  gap: min(1rem, 3cqw);
+}
+.card-social-visit .icons a {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: block;
+}
+.card-social-visit .social-icon {
+  width: clamp(1.6rem, 8vw, 3rem); /* reserva */
+  height: clamp(1.6rem, 8vw, 3rem);
+  width: min(3rem, 14cqw);
+  height: min(3rem, 14cqw);
+}
+
+/* Tablet largo: o card de 60% ficava estreito demais */
+@media (max-width: 1100px) {
+  .card-social-visit {
+    width: min(100%, 440px);
+    margin-inline: auto;
+  }
+}
+
+/* Tablet e celular */
+@media (max-width: 800px) {
+  .icons-schedule {
+    width: 100%;
+    max-width: 100%;
+  }
+  .card-social-visit {
+    width: min(100%, 520px);
+    margin-inline: auto; /* centralizado quando empilha */
+  }
+}
+
+/* Celulares estreitos: cabeçalho cabe em 320px sem cortar */
+@media (max-width: 520px) {
+  header {
+    gap: 10px;
+  }
+  .logo {
+    font-size: 16px;
+    letter-spacing: 0.06em;
+  }
+  nav {
+    gap: 8px;
+  }
+  nav .social-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  .btn {
+    padding: 8px 12px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+}
+@media (max-width: 400px) {
+  header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+/* cards index */
+/* auto-fit: cria quantas colunas couberem. min(100%, 300px) evita estourar telas de 320px */
+.specialities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+.card-container > h2 {
+  align-items: center;
+  font-size: 2rem;
+}
+
+/* card grandes*/
+.plans {
+  padding: 12vh var(--pad);
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+.plan {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.plan .b {
+  align-items: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px;
+}
+.plan h3 {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.price {
+  text-align: center;
+  color: #ceb226;
+}
+.plan ul {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+  padding-left: 18px;
+  font-size: 19px;
+}
+.plan .btn {
+  align-self: center;
+}
+/* Itens da lista aparecem em sequência quando o plano entra na tela */
+.plan.in li {
+  animation: fade-up 0.7s ease backwards;
+}
+.plan.in li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.plan.in li:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.plan.in li:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.plan.in li:nth-child(5) {
+  animation-delay: 0.4s;
+}
+* ---------- Fades e cortina de entrada ---------- */
+/* .rv = aparece ao entrar na tela (classe "in" via IntersectionObserver) */
+.rv {
+  opacity: 0;
+  transform: translateY(50px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+/* ---------- icons nos cards ---------- */
+.icons-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+.icons-card {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+}
+.icons-card:hover {
+  animation: wobble 0.5s 1 linear;
+}
+.icons-card {
+  filter: var(--icon-filter);
+}
+.icons-card {
+  filter: brightness(0) invert(1); /* no topo o fundo é sempre escuro */
+}
+.icon-card-group {
+  gap: 1rem;
+  display: flex;
+  padding-top: 1rem;
+}
+.visit h2,
+.plan h3 {
+  overflow-wrap: break-word;
+}
+.rv > p {
+  font-size: 1.2rem;
+  position: absolute;
+}
+
+.rv {
+  font-size: 1.5rem;
+}
+
+.b {
+  background-color: #191919;
+}
+
+/* Button Container with Metallic Gradient and Depth */
+.b {
+  position: relative;
+  background: linear-gradient(135deg, hsla(0, 4%, 89%, 0), #13131300);
+  border-radius: 10px;
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.3),
+    -6px -6px 12px rgba(44, 44, 44, 0.3),
+    inset 2px 2px 4px rgba(90, 89, 89, 0.4),
+    inset -2px -2px 4px rgba(116, 115, 115, 0.5);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Shining Effect Overlay plans */
+.b::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vh;
+  height: 100vh;
+  background: linear-gradient(45deg, #676767, #343131b3, #070707);
+  background-size: 200% 200%;
+  animation: shine 2s infinite ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.b > h3,
+li {
+  font-family:
+    "Montserrat",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif;
+  position: relative; /* fica acima do brilho (::before) e centralizado pelo flex do card */
+  z-index: 1;
+  width: 100%;
+  text-align: center; /* encolhe no celular, 2.5rem no desktop */
+  white-space: normal; /* o texto quebra de linha dentro do card */
+  overflow-wrap: anywhere;
+}
+.price {
+  position: relative; /* fica acima do brilho (::before) e centralizado pelo flex do card */
+  z-index: 1;
+  width: 100%;
+  text-align: center; /* encolhe no celular, 2.5rem no desktop */
+  white-space: normal; /* o texto quebra de linha dentro do card */
+  overflow-wrap: anywhere;
+}
+
+@media screen and (max-width: 768px) {
+  .mapa-container {
+    padding-top: 5.5rem;
+  }
+}

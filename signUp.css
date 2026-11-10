@@ -1,0 +1,563 @@
+/* =====================================================================
+   signUp.css - página de cadastro (signUp.html)
+   Tema claro/escuro automático (segue o sistema do visitante).
+   ===================================================================== */
+
+/* ---------- Variáveis ---------- */
+:root {
+  --h: "Oswald", "Arial Narrow", Impact, sans-serif;
+  --bg: #f4f2ee;
+  --fg: #111;
+  --mut: #6b6762;
+  --card: #fff;
+  --acc: #eff300;
+  --line: #1112;
+  --icon-filter: brightness(0); /* ícones pretos no tema claro */
+  --pad: 4vw;
+  padding-top: env(
+    safe-area-inset-top,
+    0px
+  ); /* respeita o "notch" do celular */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e0e;
+    --fg: #f2f0ea;
+    --mut: #9a968f;
+    --card: #181818;
+    --line: #fff2;
+    --icon-filter: brightness(0) invert(1); /* ícones brancos no tema escuro */
+  }
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family:
+    "Archivo",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif;
+  overflow-x: hidden;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+h2 {
+  font-size: clamp(34px, 6vw, 84px);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+/* ---------- Cabeçalho (sempre sobre o hero escuro, por isso texto branco) ---------- */
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  padding: clamp(20px, 4vw, 40px) var(--pad);
+  color: #fff;
+}
+nav {
+  display: flex;
+  flex-wrap: wrap; /* logo e ícones quebram de linha em telas estreitas */
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 28px;
+  font-size: 14px;
+}
+.logo {
+  font-family: var(--h);
+  font-size: clamp(20px, 5vw, 32px);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+/* Sublinhado que "cresce" ao passar o mouse nos links do menu */
+nav a {
+  position: relative;
+}
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+nav a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-block;
+  text-align: center;
+  padding: 12px 24px;
+  border: 1px solid currentColor;
+  border-radius: 99px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.btn:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* ---------- Ícones sociais ---------- */
+.container-social {
+  filter: var(--icon-filter);
+}
+header .container-social {
+  filter: brightness(0) invert(1); /* no topo o fundo é sempre escuro */
+}
+.icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+.social-icon {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+}
+.social-icon:hover {
+  animation: wobble 0.5s 1 linear;
+}
+@keyframes wobble {
+  0%,
+  50% {
+    transform: scale(0.7, 1.3);
+  }
+  25%,
+  75% {
+    transform: scale(1.3, 0.7);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  height: 100vh;
+  height: 100svh; /* altura real no celular */
+  min-height: 520px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  color: #fff;
+}
+/* Camada do parallax (o JS a desloca). inset negativo = folga para o movimento */
+.hero .img {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  min-height: 100vh;
+  position: absolute;
+  inset: -12% 0;
+  background:
+    radial-gradient(60% 50% at 70% 35%, #3b4a12 0, transparent 70%),
+    radial-gradient(40% 40% at 25% 70%, #1d2a3a 0, transparent 70%),
+    linear-gradient(160deg, #151515, #2a2a2a 60%, #0b0b0b);
+  will-change: transform;
+}
+.img-team {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* foto centralizada e sem distorção em qualquer tela */
+  object-position: center;
+}
+/* Círculos decorativos: tamanho e posição em vw/vh = acompanham a tela */
+.hero .shape {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #fff3;
+  will-change: transform;
+  animation: fade-in 1.6s 0.4s ease backwards;
+}
+.shape-1 {
+  width: 38vw;
+  height: 38vw;
+  right: 6vw;
+  top: 18vh;
+}
+.shape-2 {
+  width: 16vw;
+  height: 16vw;
+  left: 10vw;
+  top: 28vh;
+}
+.hero h1 {
+  position: relative;
+  font-size: clamp(64px, 17vw, 260px);
+  line-height: 0.85;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  padding: 0 var(--pad) 6vh;
+}
+/* Título "sobe" de dentro de uma máscara (overflow hidden) quando body.ready */
+.hero h1 span {
+  display: block;
+  overflow: hidden;
+}
+.hero h1 i {
+  display: block;
+  font-style: normal;
+  transform: translateY(105%);
+  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+body.ready .hero h1 i {
+  transform: none;
+}
+body.ready .hero h1 span:nth-child(2) i {
+  transition-delay: 0.12s;
+}
+
+/* ---------- Letreiro ---------- */
+.marquee {
+  overflow: hidden;
+  background: var(--acc);
+  color: #111;
+  padding: 14px 0;
+  white-space: nowrap;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(16px, 2.2vw, 28px);
+}
+.marquee div {
+  display: inline-block;
+  will-change: transform;
+}
+.marquee span {
+  margin: 0 28px;
+}
+
+/* ---------- Planos ---------- */
+/* auto-fit + min(100%, 260px): 3 colunas no desktop, 2 no tablet, 1 no celular */
+.plans {
+  padding: 12vh var(--pad);
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+.plan {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+/* Faixa colorida no topo do plano (a cor interna sofre parallax) */
+
+.plan .ph {
+  position: relative;
+  overflow: hidden;
+  height: clamp(120px, 18vw, 180px);
+}
+.plan .ph div {
+  position: absolute;
+  inset: -15% 0;
+  will-change: transform;
+}
+.plan:nth-child(1) .ph div {
+  background: linear-gradient(135deg, #8aa0a8, #2d3b40);
+}
+.plan:nth-child(2) .ph div {
+  background: linear-gradient(135deg, #c9b18a, #4a3a22);
+}
+.plan:nth-child(3) .ph div {
+  background: linear-gradient(135deg, #b6d84a, #26330a);
+}
+.plan .b {
+  align-items: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px;
+}
+.plan h3 {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.price {
+  text-align: center;
+  color: var(--mut);
+}
+.plan ul {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+  padding-left: 18px;
+  font-size: 15px;
+}
+.plan .btn {
+  align-self: center;
+}
+/* Itens da lista aparecem em sequência quando o plano entra na tela */
+.plan.in li {
+  animation: fade-up 0.7s ease backwards;
+}
+.plan.in li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.plan.in li:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.plan.in li:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.plan.in li:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+/* ---------- Visita / newsletter ---------- */
+.visit {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  padding: 10vh var(--pad);
+  border-top: 1px solid var(--line);
+  padi
+}
+.visit p {
+  max-width: 52ch;
+  margin-bottom: 24px;
+  color: var(--mut);
+  line-height: 1.6;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+input {
+  flex: 1;
+  min-width: min(100%, 200px);
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--card);
+  color: var(--fg);
+  font: inherit;
+}
+
+/* ---------- Rodapé ---------- */
+footer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  align-items: center;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  padding: 6vh var(--pad);
+  color: var(--mut);
+  font-size: 15px;
+}
+footer h3 {
+  margin-bottom: 8px;
+  color: var(--fg);
+  letter-spacing: 0.12em;
+}
+
+/* ---------- Fades e cortina de entrada ---------- */
+/* .rv = aparece ao entrar na tela (classe "in" via IntersectionObserver) */
+.rv {
+  opacity: 0;
+  transform: translateY(50px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+/* Cortina amarela que cobre a tela ao abrir e sobe quando o JS põe body.ready */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: var(--acc);
+  color: #111;
+  font-size: clamp(56px, 35vw, 57px);
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-align: center;
+  pointer-events: none;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.18, 1);
+}
+body.ready .curtain {
+  transform: translateY(-100%);
+}
+
+/* ---------- Celulares: tudo centralizado ---------- */
+@media (max-width: 700px) {
+  nav {
+    justify-content: center;
+    text-align: center;
+  }
+  .social-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .visit {
+    text-align: center;
+  }
+  .visit p {
+    margin-inline: auto;
+  }
+  form {
+    justify-content: center;
+  }
+  footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Acessibilidade: sem movimento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+  .rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hero h1 i {
+    transform: none;
+    transition: none;
+  }
+  .curtain {
+    display: none;
+  }
+}
+/* ---------- icons nos cards ---------- */
+.icons-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+.icons-card {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+}
+.icons-card:hover {
+  animation: wobble 0.5s 1 linear;
+}
+.icons-card {
+  filter: var(--icon-filter);
+}
+.icons-card {
+  filter: brightness(0) invert(1); /* no topo o fundo é sempre escuro */
+}
+.icon-card-group {
+  gap: 1rem;
+  display: flex;
+  padding-top: 1rem;
+}
+/* ---------- copy ---------- */
+.copy {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  text-align: center;
+  padding: 20px 10px;
+  background-color: no;
+  border-top: 1px solid #1b1b1b;
+  letter-spacing: 0.5px;
+}
+.heart {
+  color: #ff4d4d;
+  margin: 0 8px;
+  font-size: 14px;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ---------- Fonte Montserrat (classe .rv e itens de lista) ---------- */
+.rv,
+li {
+  font-size: 1.2rem;
+  font-family:
+    "Montserrat",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+/* Montserrat é mais larga que Archivo: títulos longos quebram em vez de vazar */
+.visit h2,
+.plan h3 {
+  overflow-wrap: break-word;
+}
+.rv > p {
+  font-size: 1.2rem;
+}
+@media (max-width: 700px) {
+.visit {
+    padding-top: 1.2rem;
+  }
+}
