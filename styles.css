@@ -387,7 +387,9 @@ nav .container-social {
   margin: 12px 0 20px;
 }
 .text-black {
-  color: #fafafa;
+  text-align: left;
+  color: white;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
 }
 
 /* ---------- Endereços + mapa ---------- */
@@ -584,9 +586,9 @@ footer .icons {
   letter-spacing: 0.5px;
 }
 .heart {
-  color: #ff4d4d;
+  color: #fafafa;
   margin: 0 8px;
-  font-size: 14px;
+  font-size: 22px;
   display: inline-block;
   animation: pulse 1.5s infinite;
 }
@@ -679,7 +681,7 @@ footer .icons {
   width: 100%;
   text-align: center;
   font-size: clamp(
-    1.4rem,
+    0.4rem,
     5vw,
     2.5rem
   ); /* encolhe no celular, 2.5rem no desktop */

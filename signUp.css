@@ -517,9 +517,9 @@ body.ready .curtain {
   letter-spacing: 0.5px;
 }
 .heart {
-  color: #ff4d4d;
+ color: #fafafa;
   margin: 0 8px;
-  font-size: 14px;
+  font-size: 22px;
   display: inline-block;
   animation: pulse 1.5s infinite;
 }
